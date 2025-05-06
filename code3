@@ -1,0 +1,80 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+struct Node {
+    string label;
+    vector<Node*> children;
+};
+
+class BookTree {
+public:
+    Node* root;
+
+    BookTree() {
+        root = new Node();
+    }
+
+    void createTree() {
+        cout << "Enter the name of the book: ";
+        getline(cin, root->label);
+
+        int numChapters;
+        cout << "Enter the number of chapters: ";
+        cin >> numChapters;
+        cin.ignore();
+
+        for (int i = 0; i < numChapters; ++i) {
+            Node* chapter = new Node();
+            cout << "Enter the name of chapter " << i + 1 << ": ";
+            getline(cin, chapter->label);
+
+            int numSections;
+            cout << "Enter the number of sections in chapter " << chapter->label << ": ";
+            cin >> numSections;
+            cin.ignore();
+
+            for (int j = 0; j < numSections; ++j) {
+                Node* section = new Node();
+                cout << "Enter the name of section " << j + 1 << ": ";
+                getline(cin, section->label);
+
+                int numSubsections;
+                cout << "Enter the number of subsections in section " << section->label << ": ";
+                cin >> numSubsections;
+                cin.ignore();
+
+                for (int k = 0; k < numSubsections; ++k) {
+                    Node* subsection = new Node();
+                    cout << "Enter the name of subsection " << k + 1 << ": ";
+                    getline(cin, subsection->label);
+                    section->children.push_back(subsection);
+                }
+                chapter->children.push_back(section);
+            }
+            root->children.push_back(chapter);
+        }
+    }
+
+    void displayTree(Node* node, int depth = 0) {
+        if (node == nullptr) return;
+        for (int i = 0; i < depth; ++i) cout << "  ";
+        cout << node->label << endl;
+        for (Node* child : node->children) {
+            displayTree(child, depth + 1);
+        }
+    }
+};
+
+int main() {
+    BookTree book;
+    book.createTree();
+    cout << "\nBOOK STRUCTURE:\n";
+    book.displayTree(book.root);
+    return 0;
+}
+
+
+
+
