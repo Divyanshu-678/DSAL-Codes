@@ -1,0 +1,71 @@
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+using namespace std;
+
+class Graph {
+private:
+    unordered_map<string, vector<pair<string, int>>> adjList;
+
+public:
+    void addEdge(string u, string v, int weight) {
+        adjList[u].push_back({v, weight});
+        adjList[v].push_back({u, weight});
+    }
+
+    void display() {
+        cout << "Adjacency list:\n"; 
+        for (auto &pair : adjList) {
+            cout << pair.first << " -> ";
+            for (auto &nb : pair.second) {
+                cout << "(" << nb.first << ", " << nb.second << ") ";
+            }
+            cout << endl;
+        }
+    }
+
+    void DFSHelper(const string &node, unordered_map<string, bool> &visited) {
+        visited[node] = true;
+        for (auto &nb : adjList[node]) {
+            if (!visited[nb.first]) {
+                DFSHelper(nb.first, visited);
+            }
+        }
+    }
+
+    bool isConnected() {
+        if (adjList.empty()) {
+            return false;
+        }
+
+        unordered_map<string, bool> visited;
+        DFSHelper(adjList.begin()->first, visited);
+
+        return visited.size() == adjList.size();
+    }
+};
+
+int main() {
+    Graph g;
+    int edges;
+    cout << "Enter number of edges: ";
+    cin >> edges;
+
+    cout << "Enter edges in format: \n City1 City2 Distance\n";
+    for (int i = 0; i < edges; ++i) {
+        string u, v;
+        int weight;
+        cin >> u >> v >> weight;
+        g.addEdge(u, v, weight);
+    }
+
+    g.display();
+
+    if (g.isConnected()) {
+        cout << "The graph is connected.\n";
+    } else {
+        cout << "The graph is not connected.\n";
+    }
+
+    return 0;
+}
